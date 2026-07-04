@@ -1,0 +1,19 @@
+plugin: amazon.aws.aws_ec2
+
+regions:
+  - ap-southeast-1
+
+filters:
+  tag:Project: jenkins-aws
+  instance-state-name: running
+
+keyed_groups:
+  - key: ec2_tags.Name
+    prefix: ""
+    separator: ""
+
+hostnames:
+  - tag:Name
+
+compose:
+  ansible_host: instance_id

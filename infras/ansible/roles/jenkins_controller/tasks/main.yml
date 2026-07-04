@@ -1,0 +1,83 @@
+# 
+
+
+
+---
+- name: Create /var/lib/jenkins directory
+  ansible.builtin.file:
+    path: /var/lib/jenkins
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Check if EBS volume already has filesystem
+  ansible.builtin.command:
+    cmd: blkid /dev/nvme1n1
+  register: blkid_result
+  failed_when: false
+  changed_when: false
+
+- name: Format EBS volume if not formatted
+  ansible.builtin.command:
+    cmd: mkfs.xfs /dev/nvme1n1
+  when: blkid_result.rc != 0
+
+- name: Mount EBS volume to /var/lib/jenkins
+  ansible.posix.mount:
+    path: /var/lib/jenkins
+    src: /dev/nvme1n1
+    fstype: xfs
+    state: mounted
+
+- name: Add mount to /etc/fstab
+  ansible.posix.mount:
+    path: /var/lib/jenkins
+    src: /dev/nvme1n1
+    fstype: xfs
+    state: present
+
+- name: Install Java 21
+  ansible.builtin.dnf:
+    name: java-21-amazon-corretto
+    state: present
+
+- name: Add Jenkins repo
+  ansible.builtin.get_url:
+    url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    dest: /etc/yum.repos.d/jenkins.repo
+
+- name: Import Jenkins GPG key
+  ansible.builtin.rpm_key:
+    key: https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+    state: present
+
+- name: Install Jenkins
+  ansible.builtin.dnf:
+    name: jenkins
+    state: present
+
+- name: Set correct ownership on /var/lib/jenkins
+  ansible.builtin.file:
+    path: /var/lib/jenkins
+    state: directory
+    owner: jenkins
+    group: jenkins
+
+- name: Enable and start Jenkins
+  ansible.builtin.systemd:
+    name: jenkins
+    enabled: true
+    state: started
+
+- name: Wait for Jenkins to be ready
+  ansible.builtin.uri:
+    url: http://localhost:8080
+    status_code:
+      - 200
+      - 403
+    timeout: 60
+  register: jenkins_health
+  retries: 10
+  delay: 10
+  until: jenkins_health.status in [200, 403]

@@ -1,0 +1,12 @@
+.DS_Store
+*.log
+infras/terraform/.terraform/
+infras/terraform/terraform.tfstate
+infras/terraform/terraform.tfstate.backup
+infras/terraform/*.tfstate.*
+infras/terraform/last_snapshot.txt
+infras/packer/packer_cache/
+*.pem
+*.csv
+*.rtf
+node_modules/

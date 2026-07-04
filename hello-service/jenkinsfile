@@ -1,0 +1,35 @@
+pipeline {
+    agent { label 'linux-docker' }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Code checked out automatically by Jenkins'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'docker build -t hello-service:${BUILD_NUMBER} .'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh '''
+                    docker run -d --name app-test -p 3000:3000 hello-service:${BUILD_NUMBER}
+                    sleep 5
+                    curl -f http://localhost:3000/health
+                    docker stop app-test
+                    docker rm app-test
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker rmi hello-service:${BUILD_NUMBER} || true'
+        }
+    }
+}

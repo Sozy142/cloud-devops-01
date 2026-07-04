@@ -1,0 +1,12 @@
+---
+- name: Configure NAT instance
+  hosts: jenkins_aws_nat_instance
+  become: true
+  roles:
+    - nat
+
+- name: Configure Jenkins Controller
+  hosts: jenkins_aws_controller_instance
+  become: true
+  roles:
+    - jenkins_controller
