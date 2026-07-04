@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'docker build -t hello-service:${BUILD_NUMBER} .'
+                sh 'docker build -t hello-service:${BUILD_NUMBER} hello-service/'
             }
         }
 
