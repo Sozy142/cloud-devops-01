@@ -45,6 +45,7 @@ until aws ssm describe-instance-information \
   sleep 15
 done
 echo "Controller is ready!"
+sleep 15
 
 # Step 5: Configure Jenkins Controller
 echo "Configuring Jenkins Controller..."

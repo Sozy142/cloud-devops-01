@@ -42,6 +42,11 @@
     name: java-21-amazon-corretto
     state: present
 
+- name: Install Git
+  ansible.builtin.dnf:
+    name: git
+    state: present
+
 - name: Add Jenkins repo
   ansible.builtin.get_url:
     url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
