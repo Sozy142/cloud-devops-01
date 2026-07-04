@@ -2,11 +2,16 @@
 - name: Configure NAT instance
   hosts: jenkins_aws_nat_instance
   become: true
+  vars:
+    ansible_ssh_private_key_file: "{{ lookup('amazon.aws.aws_ssm', '/jenkins-aws/ssh-private-key', region='ap-southeast-1') }}"
   roles:
     - nat
 
 - name: Configure Jenkins Controller
   hosts: jenkins_aws_controller_instance
+  become: true
+  vars:
+    ansible_ssh_private_key_file: "{{ lookup('amazon.aws.aws_ssm', '/jenkins-aws/ssh-private-key', region='ap-southeast-1') }}"
   become: true
   roles:
     - jenkins_controller
