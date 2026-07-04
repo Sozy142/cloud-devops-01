@@ -13,6 +13,12 @@ const server = http.createServer((req, res) => {
             version: '1.0.0',
             message: 'Hello from Jenkins CI!'
         }));
+    } else if (req.url === '/version') {
+        res.writeHead(200);
+        res.end(JSON.stringify({
+            version: '1.0.0',
+            build: process.env.BUILD_NUMBER || 'local'
+        }));
     } else {
         res.writeHead(404);
         res.end(JSON.stringify({ error: 'Not found' }));
@@ -21,4 +27,4 @@ const server = http.createServer((req, res) => {
 
 server.listen(3000, () => {
     console.log('hello-service running on port 3000');
-});// test pipeline
+});

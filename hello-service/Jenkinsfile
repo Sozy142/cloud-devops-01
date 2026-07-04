@@ -20,6 +20,8 @@ pipeline {
                     docker run -d --name app-test -p 3000:3000 hello-service:${BUILD_NUMBER}
                     sleep 5
                     curl -f http://localhost:3000/health
+                    curl -f http://localhost:3000/version
+                    curl -f http://localhost:3000/
                     docker stop app-test
                     docker rm app-test
                 '''
