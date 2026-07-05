@@ -57,3 +57,15 @@ resource "aws_route" "private_nat_route" {
   destination_cidr_block = "0.0.0.0/0"
   network_interface_id   = module.compute.nat_primary_network_interface_id
 }
+
+
+module "monitoring" {
+  source = "./modules/monitoring"
+
+  controller_instance_id = module.compute.controller_instance_id
+  nat_instance_id        = module.compute.nat_instance_id
+  alb_arn_suffix         = module.alb.alb_arn_suffix
+  sns_topic_arn          = "arn:aws:sns:ap-southeast-1:592245848352:jenkins-aws-alerts"
+  project_name           = local.project_name
+  common_tags            = local.common_tags
+}
