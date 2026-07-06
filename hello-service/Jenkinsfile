@@ -22,8 +22,8 @@ pipeline {
                     curl -f http://localhost:3000/health
                     curl -f http://localhost:3000/version
                     curl -f http://localhost:3000/
-                    docker stop app-test
-                    docker rm app-test
+                    docker stop app-test-${BUILD_NUMBER}
+                    docker rm app-test-${BUILD_NUMBER}
                 '''
             }
         }

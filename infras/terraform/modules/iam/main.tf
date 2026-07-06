@@ -102,6 +102,7 @@ resource "aws_iam_role_policy" "controller_ec2_policy" {
           "ec2:DescribeVpcs",
           "ec2:DescribeSpotInstanceRequests",
           "ec2:GetConsoleOutput",
+          "iam:CreateServiceLinkedRole",
           "iam:PassRole"
         ]
         Resource = "*"
