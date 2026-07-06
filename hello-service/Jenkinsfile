@@ -17,6 +17,8 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
+                    docker ps -q --filter "publish=3000" | xargs -r docker stop
+                    docker ps -aq --filter "publish=3000" | xargs -r docker rm
                     docker run -d --name app-test-${BUILD_NUMBER} -p 3000:3000 hello-service:${BUILD_NUMBER}
                     sleep 5
                     curl -f http://localhost:3000/health
