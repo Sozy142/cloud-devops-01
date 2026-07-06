@@ -3,7 +3,7 @@
   hosts: jenkins_aws_nat_instance
   become: true
   vars:
-    ansible_ssh_private_key_file: "{{ lookup('amazon.aws.aws_ssm', '/jenkins-aws/ssh-private-key', region='ap-southeast-1') }}"
+    ansible_ssh_private_key_file: "~/.ssh/jenkins-poc-key.pem"
   roles:
     - nat
 
@@ -11,7 +11,6 @@
   hosts: jenkins_aws_controller_instance
   become: true
   vars:
-    ansible_ssh_private_key_file: "{{ lookup('amazon.aws.aws_ssm', '/jenkins-aws/ssh-private-key', region='ap-southeast-1') }}"
-  become: true
+    ansible_ssh_private_key_file: "~/.ssh/jenkins-poc-key.pem"
   roles:
     - jenkins_controller

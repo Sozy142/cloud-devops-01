@@ -33,9 +33,6 @@ ansible-playbook site.yml --limit jenkins_aws_nat_instance
 
 # Step 4: Wait for Controller to register with SSM
 echo "Waiting for Controller to register with SSM..."
-cd "../terraform"
-CONTROLLER_ID=$(terraform output -raw controller_instance_id)
-cd "../ansible"
 
 until aws ssm describe-instance-information \
   --filters "Key=InstanceIds,Values=$CONTROLLER_ID" \
