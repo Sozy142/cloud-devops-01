@@ -17,7 +17,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
-                    docker run -d --name app-test -p 3000:3000 hello-service:${BUILD_NUMBER}
+                    docker run -d --name app-test-${BUILD_NUMBER} -p 3000:3000 hello-service:${BUILD_NUMBER}
                     sleep 5
                     curl -f http://localhost:3000/health
                     curl -f http://localhost:3000/version
@@ -31,7 +31,11 @@ pipeline {
 
     post {
         always {
-            sh 'docker rmi hello-service:${BUILD_NUMBER} || true'
+            sh '''
+                docker stop app-test-${BUILD_NUMBER} || true
+                docker rm app-test-${BUILD_NUMBER} || true
+                docker rmi hello-service:${BUILD_NUMBER} || true
+            '''
         }
     }
 }
