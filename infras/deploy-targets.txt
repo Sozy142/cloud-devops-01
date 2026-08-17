@@ -1,0 +1,9 @@
+# One GitHub repo per line ("owner/repo") that uses this shared Jenkins for
+# CI/CD. apply.sh reads this list to update each repo's webhook URL to the
+# new ALB DNS name after every destroy+apply cycle. Lines starting with #
+# and blank lines are ignored.
+#
+# To onboard a new project: add its "owner/repo" here, make sure its
+# Jenkinsfile points agent { label 'ec2-agent' }, and tag its deploy target
+# EC2 instance with JenkinsDeployable=true (see modules/iam/main.tf).
+Sozy142/logilab

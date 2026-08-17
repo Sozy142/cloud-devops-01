@@ -143,6 +143,45 @@ resource "aws_iam_role_policy_attachment" "agent_ssm_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+# Cho agent quyền chạy lệnh deploy qua SSM Run Command (không SSH) trên BẤT KỲ
+# EC2 instance nào được đánh dấu tag JenkinsDeployable=true — tag-based
+# (ABAC), không hardcode ID của riêng 1 project. Onboard project mới sau này
+# chỉ cần gắn đúng tag đó vào EC2 instance của project đó, không cần sửa gì ở
+# đây hay trong bất kỳ repo Jenkins nào.
+resource "aws_iam_role_policy" "agent_ssm_deploy" {
+  name = "${var.project_name}-agent-ssm-deploy"
+  role = aws_iam_role.jenkins_agent_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "SendCommandToTaggedInstances"
+        Effect   = "Allow"
+        Action   = "ssm:SendCommand"
+        Resource = "arn:aws:ec2:ap-southeast-1:592245848352:instance/*"
+        Condition = {
+          StringEquals = {
+            "ssm:resourceTag/JenkinsDeployable" = "true"
+          }
+        }
+      },
+      {
+        Sid      = "SendCommandDocument"
+        Effect   = "Allow"
+        Action   = "ssm:SendCommand"
+        Resource = "arn:aws:ssm:ap-southeast-1::document/AWS-RunShellScript"
+      },
+      {
+        Sid      = "GetCommandInvocation"
+        Effect   = "Allow"
+        Action   = "ssm:GetCommandInvocation"
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 resource "aws_iam_instance_profile" "jenkins_agent_profile" {
   name = "${var.project_name}-agent-profile"
   role = aws_iam_role.jenkins_agent_role.name
