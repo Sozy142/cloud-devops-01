@@ -25,7 +25,7 @@ module "iam" {
 
 module "compute" {
   source                      = "./modules/compute"
-  ami_id                      = data.aws_ami.amazon_linux_2023.id
+  ami_id                      = var.ami_id
   nat_instance_type           = var.nat_instance_type
   controller_instance_type    = var.controller_instance_type
   public_subnet_id            = module.vpc.public_subnet_id

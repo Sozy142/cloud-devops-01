@@ -4,6 +4,11 @@
   become: true
   vars:
     ansible_ssh_private_key_file: "~/.ssh/jenkins-poc-key.pem"
+  pre_tasks:
+    - name: Wait for SSH to become available over SSM
+      ansible.builtin.wait_for_connection:
+        timeout: 180
+        sleep: 10
   roles:
     - nat
 
@@ -12,5 +17,10 @@
   become: true
   vars:
     ansible_ssh_private_key_file: "~/.ssh/jenkins-poc-key.pem"
+  pre_tasks:
+    - name: Wait for SSH to become available over SSM
+      ansible.builtin.wait_for_connection:
+        timeout: 180
+        sleep: 10
   roles:
     - jenkins_controller

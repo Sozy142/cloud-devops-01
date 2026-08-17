@@ -48,3 +48,9 @@ variable "jenkins_snapshot_id" {
   description = "EBS snapshot ID to restore Jenkins data from. Leave null for fresh install."
   default     = null
 }
+
+variable "ami_id" {
+  type        = string
+  description = "AMI ID for NAT/Controller instances. Pinned manually — bump deliberately instead of tracking most_recent, to avoid forced instance/ALB replacement on every apply."
+  default     = "ami-075c85f75a73765e7"
+}
